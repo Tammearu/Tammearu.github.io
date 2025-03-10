@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="et">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kalkulaator - Epoksiidi Kogus ja Mass</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f0f0f0;
+      }
+      h1 {
+        text-align: center;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .input-field {
+        margin-bottom: 10px;
+        width: 100%;
+      }
+      .input-field label {
+        display: block;
+        margin-bottom: 5px;
+      }
+      .input-field input {
+        width: 100%;
+        padding: 8px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      .result {
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+      }
+      .result p {
+        margin: 5px 0;
+      }
+      button {
+        padding: 10px 15px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+        font-size: 16px;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Epoksiidi Koguse Kalkulaator</h1>
+
+      <div class="input-field">
+        <label for="length">Pikkus (cm):</label>
+        <input
+          type="number"
+          id="length"
+          placeholder="Sisesta pikkus cm"
+          required
+        />
+      </div>
+
+      <div class="input-field">
+        <label for="width">Laius (cm):</label>
+        <input
+          type="number"
+          id="width"
+          placeholder="Sisesta laius cm"
+          required
+        />
+      </div>
+
+      <div class="input-field">
+        <label for="height">Kõrgus (mm):</label>
+        <input
+          type="number"
+          id="height"
+          placeholder="Sisesta kõrgus mm"
+          required
+        />
+      </div>
+
+      <button onclick="calculate()">Arvuta</button>
+
+      <div id="result" class="result">
+        <!-- Siia kuvatakse tulemused -->
+      </div>
+    </div>
+
+    <script>
+      function calculate() {
+        // Võtame kasutaja sisendi
+        const length = parseFloat(document.getElementById("length").value);
+        const width = parseFloat(document.getElementById("width").value);
+        const height = parseFloat(document.getElementById("height").value);
+
+        // Kontrollime, kas sisendid on kehtivad
+        if (
+          isNaN(length) ||
+          isNaN(width) ||
+          isNaN(height) ||
+          length <= 0 ||
+          width <= 0 ||
+          height <= 0
+        ) {
+          alert("Palun sisesta kehtivad väärtused!");
+          return;
+        }
+
+        // Kõrgus tuleb muuta sentimeetriteks
+        const heightCm = height / 10; // Muudame kõrguse mm-sentimeetriteks
+
+        // Arvutame vedeliku koguse liitrites
+        const volumeLiters = (length * width * heightCm) / 1000; // Liitrid
+
+        // Arvutame suhtearvud
+        const ratioA = (volumeLiters * 2) / 3;
+        const ratioB = volumeLiters - ratioA;
+
+        // Arvutame massid kilogrammides
+        const massA = ratioA * 1.15; // Mass A kg
+        const massB = massA * (1 / 2); // Mass B kg, arvutame suhtega 1:2 A massiga
+
+        // Arvutame vedeliku hinna
+        const pricePerKg = 22.6; // Hind 1 kg kohta
+        const totalMass = massA + massB; // Kokku mass A ja B
+        const totalPrice = totalMass * pricePerKg; // Koguhind
+
+        // Kuvame tulemused
+        const resultElement = document.getElementById("result");
+        resultElement.innerHTML = `
+                <p><strong>Kogus (liitrites):</strong> ${volumeLiters.toFixed(
+                  2
+                )} liitrit</p>
+                <p><strong>Epoksiidvaik A (1:2 suhe):</strong> ${ratioA.toFixed(
+                  2
+                )} liitrit</p>
+                <p><strong>Kõvendi B (1:2 suhe):</strong> ${ratioB.toFixed(
+                  2
+                )} liitrit</p>
+                <p><strong>Epoksiidvaik A mass (kg):</strong> ${massA.toFixed(
+                  2
+                )} kg</p>
+                <p><strong>Kõvendi B mass (kg):</strong> ${massB.toFixed(
+                  2
+                )} kg</p>
+                <p><strong>Koguse umbkaudne hind (km-ga):</strong> €${totalPrice.toFixed(
+                  2
+                )}</p>
+            `;
+      }
+    </script>
+  </body>
+</html>
